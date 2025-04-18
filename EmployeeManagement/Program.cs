@@ -1,4 +1,5 @@
 using EmployeeManagement.Data;
+using EmployeeManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagement
@@ -10,6 +11,7 @@ namespace EmployeeManagement
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("EmployeeDb"));
+            
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("MyCors", builder =>
@@ -17,6 +19,10 @@ namespace EmployeeManagement
                     builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
                 });
             });
+
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            builder.Services.AddControllers();
 
             var app = builder.Build();
             app.UseCors("MyCors");
